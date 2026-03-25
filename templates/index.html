@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Event Scraper</title>
+</head>
+<body>
+    <h1>Events</h1>
+
+    {% for event in events %}
+        <div>
+            <h2>{{ event.title }}</h2>
+            <p>{{ event.date }}</p>
+        </div>
+    {% endfor %}
+
+</body>
+</html>
