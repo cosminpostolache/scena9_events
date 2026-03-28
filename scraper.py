@@ -80,7 +80,11 @@ def get_events():
 
     for date_section in date_sections:
         # Extract the date text
-        date_text = date_section.get_text(strip=True)
+        date_section_title = date_section.find("div", class_="title")    
+        if date_section_title:
+            date_text = date_section_title.get_text(strip=True)
+        else:
+            date_text = "No date"
 
         # Find events inside this date section
         event_blocks = date_section.find_all("div", class_="events")
