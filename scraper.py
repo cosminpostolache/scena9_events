@@ -1,102 +1,51 @@
 import requests
 from bs4 import BeautifulSoup
-
-"""def get_events():
-    url = "https://example.com/events"  # we'll replace this later
-    
-    response = requests.get(url)
-    soup = BeautifulSoup(response.text, "html.parser")
-
-    events = []
-
-    # Example structure (we will adapt to a real site later)
-    for event in soup.find_all("div", class_="event"):
-        title = event.find("h2").text.strip()
-        date = event.find("span", class_="date").text.strip()
-
-        events.append({
-            "title": title,
-            "date": date
-        })
-
-    return events"""
-
-"""def get_events():
-    return [
-        {"title": "Concert A", "date": "2026-04-01"},
-        {"title": "Festival B", "date": "2026-04-05"},
-        {"title": "DJ Night", "date": "2026-04-10"},
-    ]
-"""
-import requests
-from bs4 import BeautifulSoup
-"""
-def get_events():
-    url = "https://www.control-club.ro/events/"
-
-    headers = {
-        "User-Agent": "Mozilla/5.0"
-    }
-
-    response = requests.get(url, headers=headers)
-    soup = BeautifulSoup(response.text, "html.parser")
-
-    events = []
-
-    # 🔍 You MUST adjust selectors after inspecting HTML
-    event_blocks = soup.find_all("div", class_= "events")
-
-    for event in event_blocks:
-        title_tag = event.find('a', class_='title hover')
-        date_tag = event.find("div", class_='title')
-
-        title = title_tag.text.strip() if title_tag else "No title"
-        date = date_tag.text.strip() if date_tag else "No date"
-
-        events.append({
-            "title": title,
-        })
-
-    return events"""
-    
-
-import requests
-from bs4 import BeautifulSoup
+from models import db, Event
 
 def get_events():
     url = "https://www.control-club.ro/events/"
-
-    headers = {
-        "User-Agent": "Mozilla/5.0"
-    }
+    headers = {"User-Agent": "Mozilla/5.0"}
 
     response = requests.get(url, headers=headers)
+
+    if response.status_code != 200:
+        print(f"Request failed with status: {response.status_code}")
+        return []
+
     soup = BeautifulSoup(response.text, "html.parser")
 
     events = []
 
-    # Find all date sections
     date_sections = soup.find_all("div", class_="date")
 
     for date_section in date_sections:
-        # Extract the date text
         date_section_title = date_section.find("div", class_="title")    
-        if date_section_title:
-            date_text = date_section_title.get_text(strip=True)
-        else:
-            date_text = "No date"
 
-        # Find events inside this date section
+        date_text = date_section_title.get_text(strip=True) if date_section_title else "No date"
+
         event_blocks = date_section.find_all("div", class_="events")
 
         for event in event_blocks:
             title_tag = event.find("h2") or event.find("h3") or event.find("a")
-
             title = title_tag.text.strip() if title_tag else "No title"
 
+            # ✅ Save to DB HERE
+            new_event = Event(
+                title=title,
+                date=date_text,
+                venue="Control Club",
+                source=url
+            )
+
+            db.session.add(new_event)
+
+            # still keep list if you want
             events.append({
                 "title": title,
                 "date": date_text
             })
+
+    # ✅ Commit ONCE (important!)
+    db.session.commit()
 
     return events
