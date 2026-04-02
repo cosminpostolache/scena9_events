@@ -30,14 +30,20 @@ def get_events():
             title = title_tag.text.strip() if title_tag else "No title"
 
             # ✅ Save to DB HERE
-            new_event = Event(
+            existing = Event.query.filter_by(
                 title=title,
                 date=date_text,
-                venue="Control Club",
-                source=url
-            )
+                venue="Control Club"
+                ).first()
 
-            db.session.add(new_event)
+            if not existing:    
+                new_event = Event(
+                    title=title,
+                    date=date_text,
+                    venue="Control Club",
+                    source=url
+                )
+                db.session.add(new_event)
 
             # still keep list if you want
             events.append({
