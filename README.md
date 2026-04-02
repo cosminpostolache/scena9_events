@@ -1,6 +1,6 @@
 # scena9\_events
 
-Web application for displaying information about cultural events gathered from various sources.
+Web application for managing information about cultural events gathered from various sources.
 
 
 
