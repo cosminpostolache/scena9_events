@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Scena9 Scanner</title>
+    <title>Scena9 Live Scanner</title>
 </head>
 <body>
     <h1>Events</h1>
@@ -9,7 +9,7 @@
     {% for event in events %}
         <div>
             <h2>{{ event.title }}</h2>
-            <p>{{ event.date }}</p>
+            <p>{{ event.date.strftime("%d %B %Y, %H:%M") }},{{ event.venue }}</p>
         </div>
     {% endfor %}
 

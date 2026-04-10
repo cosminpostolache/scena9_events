@@ -13,7 +13,7 @@ db.init_app(app)
 # Route to display events on the homepage. When user lands on /,do
 @app.route("/")
 def home():
-    events = Event.query.all()
+    events = Event.query.order_by(Event.date).all()
     return render_template("index.html", events=events)
 # String construction of HTML output with f string literal prefix
 # (no longer needed, due to render template above) 
