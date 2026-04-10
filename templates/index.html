@@ -6,12 +6,26 @@
 <body>
     <h1>Events</h1>
 
-    {% for event in events %}
+{% for date in grouped_events.keys() %}
+
+    {% if date == today %}
+        <h2>📅 Today</h2>
+    {% elif date == today + timedelta(days=1) %}
+        <h2>📅 Tomorrow</h2>
+    {% else %}
+        <h2>{{ date.strftime("%A, %d %B %Y") }}</h2>
+    {% endif %}
+
+    {% for event in grouped_events[date] %}
         <div>
-            <h2>{{ event.title }}</h2>
-            <p>{{ event.date.strftime("%d %B %Y, %H:%M") }},{{ event.venue }}</p>
+            <h3>{{ event.title }}</h3>
+            <p>{{ event.date.strftime("%H:%M") }}</p>
+            <p>{{ event.venue }}</p>
         </div>
     {% endfor %}
 
+    <hr>
+
+{% endfor %}
 </body>
 </html>

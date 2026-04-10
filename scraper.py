@@ -2,7 +2,7 @@ from scrapers import clubcontrol, metropolis
 from models import db 
 
 SCRAPERS = [
-    #clubcontrol.scrape,
+    clubcontrol.scrape,
     metropolis.scrape,
 ]
 
