@@ -1,5 +1,6 @@
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import UniqueConstraint
+from sqlalchemy import Text
 
 db = SQLAlchemy()
 
@@ -11,6 +12,7 @@ class Event(db.Model):
     source = db.Column(db.String(200))
     price = db.Column(db.String(100))
     type = db.Column(db.String(50))
+    details = db.Column(db.Text)
 
     __table_args__ = (
         UniqueConstraint('title', 'date', 'venue', name='unique_event'),

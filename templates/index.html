@@ -19,6 +19,9 @@
     {% for event in grouped_events[date] %}
         <div>
             <h3>{{ event.title }}</h3>
+            {% if event.details %}
+                <p>{{ event.details }}</p>
+            {% endif %}
             <p>{{ event.date.strftime("%H:%M") }}</p>
             <p>{{ event.venue }}</p>
         </div>
