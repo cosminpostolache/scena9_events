@@ -112,6 +112,14 @@ def scrape():
 
                 # clean spacing
                 details = re.sub(r"\n\s*\n+", "\n\n", details).strip()
+                # fix punctuation broken by tags
+                details = re.sub(r"\n([,.:])", r"\1", details)
+
+                # fix dash lines
+                details = re.sub(r"\n([–\-])", r" \1", details)
+
+                # fix lowercase continuation (e.g. "pentru pian...")
+                details = re.sub(r"\n([a-zăâîșț])", r" \1", details)
             else:
                 details = ""
 
