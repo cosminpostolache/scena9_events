@@ -1,10 +1,11 @@
-from scrapers import clubcontrol, metropolis, ateneu
+from scrapers import clubcontrol, metropolis, ateneu, salaradio
 from models import db 
 
 SCRAPERS = [
-    #clubcontrol.scrape,
-    #metropolis.scrape,
+    clubcontrol.scrape,
+    metropolis.scrape,
     ateneu.scrape,
+    salaradio.scrape
 ]
 
 def get_events():

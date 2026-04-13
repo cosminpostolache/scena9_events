@@ -18,12 +18,13 @@
 
     {% for event in grouped_events[date] %}
         <div>
-            <h3>{{ event.title }}</h3>
+            <h3 style="margin-bottom: 0;">{{ event.title }}</h3>
+            <p style="margin-bottom: 0;">{{ event.date.strftime("%H:%M") }}, {{ event.venue }}</p>
             {% if event.details %}
-                <p>{{ event.details }}</p>
+            <p style="white-space: pre-line; margin-top: 0;">
+                {{ event.details }}
+            </p>
             {% endif %}
-            <p>{{ event.date.strftime("%H:%M") }}</p>
-            <p>{{ event.venue }}</p>
         </div>
     {% endfor %}
 
