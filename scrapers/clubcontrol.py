@@ -118,30 +118,16 @@ def scrape():
             #print("ticket-price" in response.text)
 
             # ✅ Save to DB HERE
-            existing = Event.query.filter_by(
-                title=title,
-                date=date_obj,
-                venue="Control Club"
-                ).first()
+            #DB PUSH
 
-            if not existing:    
-                new_event = Event(
-                    title=title,
-                    date=date_obj,
-                    venue="Control Club",
-                    source=url,
-                    type="concert"
-                    #price=price_text
-                )
-                db.session.add(new_event)
+            VENUE= "Club Control"
+            link=url
+            details=""  # no details page or description available
 
-            # still keep list if you want
-           # events.append({
-           #     "title": title,
-           #     "date": date_text
-            #})
-
-    # ✅ Commit ONCE (important!)
-    db.session.commit()
+            from db_utils import save_event
+            status = save_event(title, date_obj, VENUE, link, details)
+            print(status, title)
+        from db_utils import commit_events
+        commit_events() 
 
     return events

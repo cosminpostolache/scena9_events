@@ -33,7 +33,7 @@ def get_driver():
 
 
 def scrape():
-    print("Scraper started...")  # optional debug
+    #print("Scraper started...")  # optional debug
     events = []
     try:
         driver = get_driver()
@@ -52,7 +52,7 @@ def scrape():
             href = a.get_attribute("href")
             links.append(href)
         
-        print("Found links:", len(links))
+        #print("Found links:", len(links))
         for link in links:
             driver.get(link)
             wait.until(EC.presence_of_element_located((By.CSS_SELECTOR, "section.em-event-content")))
@@ -64,7 +64,7 @@ def scrape():
 
             title_tag = soup.select_one("h1.title")
             title = title_tag.get_text(strip=True) if title_tag else "No title"
-            print("TITLE:", title)
+            #print("TITLE:", title)
             
 
             date_tag = soup.select_one(".em-event-date")
@@ -83,7 +83,7 @@ def scrape():
             datetime_str = f"{date_obj.strftime('%Y-%m-%d')} {time_obj.strftime('%H:%M')}"
             try:
                 date_obj = datetime.strptime(datetime_str, "%Y-%m-%d %H:%M")
-                print("PARSED:", date_obj)
+                #print("PARSED:", date_obj)
             except Exception as e:
                 #print("Failed parsing:", full_text, e)
                 continue
@@ -123,28 +123,14 @@ def scrape():
             else:
                 details = ""
 
-            print(details)
+            #print(details)
             
-            existing = Event.query.filter_by(
-                    title=title,
-                    date=date_obj,
-                    venue=VENUE
-                    ).first()
-
-            if not existing:    
-                    new_event = Event(  
-                        title=title,
-                        date=date_obj,
-                        venue=VENUE,
-                        source=link,
-                        type="Concert",
-                        details=details
-                        #price=price_text
-                    )  
-                    db.session.add(new_event)
-                    #events.append(new_event)
-
-        db.session.commit()
+            #DB PUSH
+            from db_utils import save_event
+            status = save_event(title, date_obj, VENUE, link, details)
+            print(status, title)
+        from db_utils import commit_events
+        commit_events() 
         
     finally:
         driver.quit()

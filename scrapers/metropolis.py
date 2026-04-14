@@ -2,6 +2,7 @@ import requests
 from bs4 import BeautifulSoup
 from models import db, Event
 from datetime import datetime
+VENUE = "Teatrul Metropolis"
 #print("SCRAPER STARTED")
 
 current_year = datetime.now().year
@@ -51,24 +52,16 @@ def scrape():
                 except ValueError:
                     print(f"Invalid time format: {time_text}")
 
-        
-        existing = Event.query.filter_by(
-                title=title,
-                date=date_obj,
-                venue="Teatrul Metropolis"
-                ).first()
 
-        if not existing:    
-                new_event = Event(
-                    title=title,
-                    date=date_obj,
-                    venue="Teatrul Metropolis",
-                    source=url,
-                    type="theater"
-                    #price=price_text
-                )
-                db.session.add(new_event)
-
-    db.session.commit()
+        details_tag = row_section.select_one("div.mboxdesc span.shrt")
+        details = details_tag.get_text(strip=True) if details_tag else ""
+        print(f"Event details: {details}")  # Debug print for details
+        link=url
+        #DB PUSH
+        from db_utils import save_event
+        status = save_event(title, date_obj, VENUE, link, details)
+        print(status, title)
+    from db_utils import commit_events
+    commit_events() 
     #print("HTML length:", len(response.text))
     return events

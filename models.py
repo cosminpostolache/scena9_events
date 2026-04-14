@@ -2,7 +2,7 @@ from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import UniqueConstraint
 from sqlalchemy import Text
 
-db = SQLAlchemy()
+from database import db
 
 class Event(db.Model):
     id = db.Column(db.Integer, primary_key=True)

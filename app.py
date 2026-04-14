@@ -1,11 +1,12 @@
 #from asyncio import events
 
 from flask import Flask
-from models import db, Event
-from scraper import get_events
 from flask import render_template
 from collections import defaultdict
 from datetime import date, timedelta
+from database import db
+from models import Event
+
 
 app = Flask(__name__)
 
@@ -13,6 +14,9 @@ app = Flask(__name__)
 app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///events.db"
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 db.init_app(app)
+
+from scraper import get_events
+
 
 # Route to display events on the homepage. When user lands on /,do
 @app.route("/")

@@ -4,12 +4,12 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.chrome.service import Service
 from webdriver_manager.chrome import ChromeDriverManager
-from selenium.webdriver.common.by import By
 import os
 import time
 from calendar import month
 #import requests
 from bs4 import BeautifulSoup
+from db_utils import commit_events, save_event
 from models import db, Event
 from datetime import datetime
 
@@ -169,28 +169,12 @@ def scrape():
                 #details = details.replace("\nProgram", "")  # add extra newline and no "Program"
 
             #print("DETAILS:", details)
+            from db_utils import save_event
+            status = save_event(title, date_obj, VENUE, link, details)
+            print(status, title)
+        from db_utils import commit_events
+        commit_events() 
 
-            existing = Event.query.filter_by(
-                    title=title,
-                    date=date_obj,
-                    venue=VENUE
-                    ).first()
-
-            if not existing:    
-                    new_event = Event(  
-                        title=title,
-                        date=date_obj,
-                        venue=VENUE,
-                        source=link,
-                        type="Concert",
-                        details=details
-                        #price=price_text
-                    )  
-                    db.session.add(new_event)
-                    #events.append(new_event)
-
-        db.session.commit()
-        
     finally:
         driver.quit()
     
