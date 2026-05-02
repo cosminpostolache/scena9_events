@@ -4,7 +4,7 @@ from models import db, Event
 from datetime import datetime
 VENUE = "Teatrul Metropolis"
 #print("SCRAPER STARTED")
-
+print("IMPORTING")
 current_year = datetime.now().year
 def scrape():
     url = "https://teatrulmetropolis.ro/program/"

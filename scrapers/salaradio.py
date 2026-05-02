@@ -4,6 +4,7 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.chrome.service import Service
 from webdriver_manager.chrome import ChromeDriverManager
+from db_utils import save_event, commit_events
 import os
 import time
 import re
@@ -12,7 +13,7 @@ from calendar import month
 from bs4 import BeautifulSoup
 from models import db, Event
 from datetime import datetime
-
+print("IMPORTING")
 VENUE = "Sala Radio"
 
 def get_driver():
@@ -35,6 +36,7 @@ def get_driver():
 def scrape():
     #print("Scraper started...")  # optional debug
     events = []
+    driver = None
     try:
         driver = get_driver()
 
@@ -72,6 +74,8 @@ def scrape():
 
             date_text = date_tag.get_text(strip=True) if date_tag else ""
             time_text = time_tag.get_text(strip=True) if time_tag else ""
+            if not date_text or not time_text:
+                continue
 
             # extract start time
             start_time = time_text.split(" - ")[0] if time_text else ""
@@ -107,7 +111,6 @@ def scrape():
                 details = details.replace("PrintFriendly", "")
 
                 # minimal fixes
-                details = re.sub(r"\n([–\-])", r" \1", details)
                 details = re.sub(r":\n+", ": ", details)
 
                 # clean spacing
@@ -126,14 +129,14 @@ def scrape():
             #print(details)
             
             #DB PUSH
-            from db_utils import save_event
+            
             status = save_event(title, date_obj, VENUE, link, details)
             print(status, title)
-        from db_utils import commit_events
         commit_events() 
         
     finally:
-        driver.quit()
+        if driver:
+            driver.quit()
     
     return events
     #return 1
