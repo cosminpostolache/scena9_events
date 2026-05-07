@@ -30,6 +30,16 @@ def scrape():
 
         raw_title = title_tag.get_text(strip=True)
         link = title_tag.get("href")
+        detail_response = requests.get(link, headers=headers)
+        detail_soup = BeautifulSoup(detail_response.text, "html.parser")
+        # --- IMAGE ---
+        img_tag = detail_soup.select_one(
+            ".elementor-widget-theme-post-featured-image img"
+        )
+
+        image_url = None
+        if img_tag:
+            image_url = img_tag.get("src") or img_tag.get("data-src")
 
         # clean title (remove "@ Expirat" etc.)
         title = re.split(r"\s*@\s*", raw_title)[0]
@@ -61,7 +71,7 @@ def scrape():
         details = summary_tag.get_text(strip=True) if summary_tag else ""
 
         # --- DB SAVE ---
-        status = save_event(title, date_obj, VENUE, link, details)
+        status = save_event(title, date_obj, VENUE, link, details, image_url)
         print(status, title)
 
     commit_events()

@@ -13,6 +13,7 @@ class Event(db.Model):
     price = db.Column(db.String(100))
     type = db.Column(db.String(50))
     details = db.Column(db.Text)
+    image_url = db.Column(db.String(300))
 
     __table_args__ = (
         UniqueConstraint('title', 'date', 'venue', name='unique_event'),

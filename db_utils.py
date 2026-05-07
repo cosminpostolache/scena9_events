@@ -4,7 +4,7 @@ from database import db
 from models import Event
 
 
-def save_event(title, date_obj, venue, link, details, event_type="Concert"):
+def save_event(title, date_obj, venue, link, details, image_url=None, event_type="Concert"):
     existing = Event.query.filter_by(
         title=title,
         date=date_obj,
@@ -14,6 +14,7 @@ def save_event(title, date_obj, venue, link, details, event_type="Concert"):
     if existing:
         existing.details = details
         existing.source = link
+        existing.image_url = image_url
         return "updated"
     
     new_event = Event(
@@ -22,7 +23,8 @@ def save_event(title, date_obj, venue, link, details, event_type="Concert"):
         venue=venue,
         source=link,
         type=event_type,
-        details=details
+        details=details,
+        image_url=image_url
     )
 
     db.session.add(new_event)

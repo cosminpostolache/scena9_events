@@ -19,6 +19,7 @@
     {% for event in grouped_events[date] %}
         <div>
             <h3 style="margin-bottom: 0;"> <a href="{{ event.source }}"> {{ event.title }}</a></h3>
+            <img src="{{ event.image_url }}" alt="{{ event.title }}" style="max-width: 100%; height: auto;">
             <p style="margin-bottom: 0;">{{ event.date.strftime("%H:%M") }}, {{ event.venue }}</p>
             {% if event.details %}
             <p style="white-space: pre-line; margin-top: 0;">
