@@ -10,13 +10,16 @@ def save_event(title, date_obj, venue, link, details, image_url=None, event_type
         date=date_obj,
         venue=venue
     ).first()
-
     if existing:
+        print("UPDATING EXISTING")
+        print("NEW IMAGE:", image_url)
+
         existing.details = details
         existing.source = link
         existing.image_url = image_url
+
+
         return "updated"
-    
     new_event = Event(
         title=title,
         date=date_obj,

@@ -2,7 +2,7 @@ import requests
 from bs4 import BeautifulSoup
 from models import db, Event
 from datetime import datetime
-
+from urllib.parse import urljoin
 current_year = datetime.now().year
 def scrape():
     url = "https://www.control-club.ro/events/"
@@ -95,6 +95,12 @@ def scrape():
         for event in event_blocks:
             title_tag = event.find("h2") or event.find("h3") or event.find("a")
             title = title_tag.text.strip() if title_tag else "No title"
+
+            base_url = "https://www.control-club.ro"
+            link = a.get("href") if (a := event.find("a")) else None
+            link = urljoin(base_url, link)
+
+            print(f"Processing event: {title} on date: {date_obj} with link: {link}")
             time_tag = event.find("span", class_="hour")
             time_text = time_tag.contents[0].strip() if time_tag else None
             if time_text:
@@ -121,7 +127,6 @@ def scrape():
             #DB PUSH
 
             VENUE= "Club Control"
-            link=url
             details=""  # no details page or description available
 
             from db_utils import save_event

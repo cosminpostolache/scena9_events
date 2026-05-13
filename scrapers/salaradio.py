@@ -9,11 +9,10 @@ import os
 import time
 import re
 from calendar import month
-#import requests
+import requests
 from bs4 import BeautifulSoup
 from models import db, Event
 from datetime import datetime
-print("IMPORTING")
 VENUE = "Sala Radio"
 
 def get_driver():
@@ -129,8 +128,25 @@ def scrape():
             #print(details)
             
             #DB PUSH
-            
-            status = save_event(title, date_obj, VENUE, link, details)
+            img_tag = soup.select_one("section.em-item-header div.em-item-image img")
+            img_url = img_tag.get("src") if img_tag else ""
+            if img_url:
+                filename = img_url.split("/")[-1]
+
+                folder = "static/images"
+                os.makedirs(folder, exist_ok=True)
+
+                filepath = os.path.join(folder, filename)
+
+                response = requests.get(img_url)
+
+                if response.status_code == 200:
+                    with open(filepath, "wb") as f:
+                        f.write(response.content)
+
+                    img_url = f"/static/images/{filename}"
+            print("IMAGE URL:", img_url)
+            status = save_event(title, date_obj, VENUE, link, details, img_url)
             print(status, title)
         commit_events() 
         

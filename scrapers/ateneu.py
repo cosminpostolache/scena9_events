@@ -13,9 +13,10 @@ from db_utils import commit_events, save_event
 from models import db, Event
 from datetime import datetime
 
+
 VENUE = "Ateneul Roman"
 from selenium.webdriver.common.by import By
-
+print("IMPORTING")
 def get_driver():
     options = webdriver.ChromeOptions()
     options.add_argument("--headless")  # optional (enable later if needed)
@@ -169,10 +170,14 @@ def scrape():
                 #details = details.replace("\nProgram", "")  # add extra newline and no "Program"
 
             #print("DETAILS:", details)
-            from db_utils import save_event
-            status = save_event(title, date_obj, VENUE, link, details)
+            #images
+            img_tag = detail_soup.select_one('meta[property="og:image"]')
+            image_url = img_tag.get("content") if img_tag else None
+            print("IMAGE URL:", image_url)
+            
+            #DB PUSH
+            status = save_event(title, date_obj, VENUE, link, details, image_url)
             print(status, title)
-        from db_utils import commit_events
         commit_events() 
 
     finally:
