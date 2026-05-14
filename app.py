@@ -3,7 +3,7 @@
 from flask import Flask
 from flask import render_template
 from collections import defaultdict
-from datetime import date, timedelta
+from datetime import date, datetime, timedelta
 from database import db
 from models import Event
 
@@ -21,10 +21,15 @@ from scraper import get_events
 # Route to display events on the homepage. When user lands on /,do
 @app.route("/")
 def home():
-    events = Event.query.order_by(Event.date).all()
-    #for e in events:
-     #  print(e.title, e.date, e.venue)
-    #print("TOTAL EVENTS:", len(events))
+    
+    events = (
+        Event.query
+        .filter(Event.date >= datetime.now())
+        .order_by(Event.date)
+        .all()
+    )
+    print("NOW:", datetime.now())
+    print("MIN DB DATE:", min(e.date for e in events))
     
     grouped_events = defaultdict(list)
     for event in events:

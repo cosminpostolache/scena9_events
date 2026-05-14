@@ -17,6 +17,7 @@ def save_event(title, date_obj, venue, link, details, image_url=None, event_type
         existing.details = details
         existing.source = link
         existing.image_url = image_url
+        existing.event_type = event_type
 
 
         return "updated"

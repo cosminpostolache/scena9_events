@@ -71,7 +71,7 @@ def scrape():
         details = summary_tag.get_text(strip=True) if summary_tag else ""
 
         # --- DB SAVE ---
-        status = save_event(title, date_obj, VENUE, link, details, image_url)
+        status = save_event(title, date_obj, VENUE, link, details, image_url, event_type="Concert")
         print(status, title)
 
     commit_events()

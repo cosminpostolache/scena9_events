@@ -146,7 +146,7 @@ def scrape():
 
                     img_url = f"/static/images/{filename}"
             print("IMAGE URL:", img_url)
-            status = save_event(title, date_obj, VENUE, link, details, img_url)
+            status = save_event(title, date_obj, VENUE, link, details, img_url, event_type="Concert")
             print(status, title)
         commit_events() 
         

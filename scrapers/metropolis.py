@@ -4,13 +4,25 @@ from models import db, Event
 from datetime import datetime
 VENUE = "Teatrul Metropolis"
 #print("SCRAPER STARTED")
-print("IMPORTING")
 current_year = datetime.now().year
 def scrape():
     url = "https://teatrulmetropolis.ro/program/"
     headers = {"User-Agent": "Mozilla/5.0"}
 
-    response = requests.get(url, headers=headers)
+    try:
+        response = requests.get(
+            url,
+            headers=headers,
+            timeout=15
+        )
+
+    except requests.exceptions.Timeout:
+        print("Timeout:", url)
+        return []
+
+    except requests.exceptions.RequestException as e:
+        print("Request failed:", e)
+        return []
 
     if response.status_code != 200:
         print(f"Request failed with status: {response.status_code}")
@@ -59,7 +71,7 @@ def scrape():
         link=url
         #DB PUSH
         from db_utils import save_event
-        status = save_event(title, date_obj, VENUE, link, details)
+        status = save_event(title, date_obj, VENUE, link, details, event_type="Teatru")
         print(status, title)
     from db_utils import commit_events
     commit_events() 

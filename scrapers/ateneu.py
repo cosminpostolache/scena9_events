@@ -16,7 +16,6 @@ from datetime import datetime
 
 VENUE = "Ateneul Roman"
 from selenium.webdriver.common.by import By
-print("IMPORTING")
 def get_driver():
     options = webdriver.ChromeOptions()
     options.add_argument("--headless")  # optional (enable later if needed)
@@ -176,7 +175,7 @@ def scrape():
             print("IMAGE URL:", image_url)
             
             #DB PUSH
-            status = save_event(title, date_obj, VENUE, link, details, image_url)
+            status = save_event(title, date_obj, VENUE, link, details, image_url, event_type="Concert")
             print(status, title)
         commit_events() 
 

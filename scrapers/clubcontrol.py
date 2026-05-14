@@ -100,6 +100,11 @@ def scrape():
             link = a.get("href") if (a := event.find("a")) else None
             link = urljoin(base_url, link)
 
+            img= event.find("div", class_="img")
+            img_tag = img.find("img") if img else None
+            image_url= img_tag.get("src") if img_tag else None
+            print("IMAGE URL:", image_url)  
+
             print(f"Processing event: {title} on date: {date_obj} with link: {link}")
             time_tag = event.find("span", class_="hour")
             time_text = time_tag.contents[0].strip() if time_tag else None
@@ -130,7 +135,7 @@ def scrape():
             details=""  # no details page or description available
 
             from db_utils import save_event
-            status = save_event(title, date_obj, VENUE, link, details)
+            status = save_event(title, date_obj, VENUE, link, details, image_url, event_type="Concert")
             print(status, title)
         from db_utils import commit_events
         commit_events() 

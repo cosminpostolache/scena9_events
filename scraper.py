@@ -7,7 +7,7 @@ from models import db
 
 SCRAPERS = [
     clubcontrol.scrape,
-    #metropolis.scrape,
+    metropolis.scrape,
     #ateneu.scrape,
     #salaradio.scrape
     #expirat.scrape
