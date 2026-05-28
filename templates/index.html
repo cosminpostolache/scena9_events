@@ -39,61 +39,89 @@
     </button> -->
 
 </div>
+<div class="page-content">
+    <div class="date-filter-bar">
 
-<div class="date-filter-bar">
+        <button class="date-btn active" data-date="all">
+            Toate
+        </button>
 
-    <button class="date-btn active" data-date="all">
-        Toate
-    </button>
+        <button class="date-btn" data-date="today">
+            Astăzi
+        </button>
 
-    <button class="date-btn" data-date="today">
-        Astăzi
-    </button>
+        <button class="date-btn" data-date="tomorrow">
+            Mâine
+        </button>
 
-    <button class="date-btn" data-date="tomorrow">
-        Mâine
-    </button>
+        <button class="date-btn" data-date="weekend">
+            Weekend
+        </button>
 
-    <button class="date-btn" data-date="weekend">
-        Weekend
-    </button>
+    </div>
 
-</div>
+        <!-- <h1>Evenimente</h1> -->
 
-    <!-- <h1>Evenimente</h1> -->
+    {% for date in grouped_events.keys() %}
+    <div class="date-group">    
+        {% if date == today %}
+            <h2 class="date-heading"> ASTĂZI · {{ date.strftime("%d %B").upper() }}</h2>
+        {% elif date == today + timedelta(days=1) %}
+            <h2 class="date-heading"> MÂINE · {{ date.strftime("%d %B").upper() }}</h2>
+        {% else %}
+            <h2 class="date-heading">
+                {{ date.strftime("%A").upper() }}
+                ·
+                {{ date.strftime("%d %B").upper() }}
+            </h2>
+        {% endif %}
 
-{% for date in grouped_events.keys() %}
-<div class="date-group">    
-    {% if date == today %}
-        <h2>📅 Astăzi</h2>
-    {% elif date == today + timedelta(days=1) %}
-        <h2>📅 Mâine</h2>
-    {% else %}
-        <h2>{{ date.strftime("%A, %d %B %Y") }}</h2>
-    {% endif %}
+        {% for event in grouped_events[date] %}
+            <div
+        class="event-card"
+        data-category="{{ event.type }}"
+        data-date="{{ event.date.strftime('%Y-%m-%d') }}">
+        
+                <h3 style="margin-bottom: 0;"> <a href="{{ event.source }}"> {{ event.title }}</a></h3>
+                <div class="event-content-row">
 
-    {% for event in grouped_events[date] %}
-        <div
-    class="event-card"
-    data-category="{{ event.type }}"
-    data-date="{{ event.date.strftime('%Y-%m-%d') }}">
-    
-            <h3 style="margin-bottom: 0;"> <a href="{{ event.source }}"> {{ event.title }}</a></h3>
-            <p><a href="{{ event.image_url }}"><img src="{{ event.image_url }}" style="max-width: 12rem; height: auto;"> </a></p>
-            <p>{{ event.type }}</p>
-            <p style="margin-bottom: 0;">{{ event.date.strftime("%H:%M") }}, {{ event.venue }}</p>
-            {% if event.details %}
-            <p style="white-space: pre-line; margin-top: 0;">
-                {{ event.details }} (...)
-            </p>
-            {% endif %}
-        </div>
+                    <div class="event-image">
+                        <a href="{{ event.source }}">
+                            <img src="{{ event.image_url }}">
+                        </a>
+                    </div>
+
+                    <div class="event-info">
+
+                        <p class="event-meta">
+                            {{ event.date.strftime("%H:%M") }},
+                            {{ event.venue }}
+                        </p>
+
+                        {% if event.details %}
+                        <p class="event-details collapsed">
+                            {{ event.details }}
+                        </p>
+
+                        <button class="expand-btn">
+                            (Mai mult)
+                        </button>
+                        {% endif %}
+
+                    </div>
+
+                </div>
+                   <!-- {{ event.details }} --> 
+                {% if   not loop.last %}
+                <hr>
+                {% endif %}
+            </div>
+        {% endfor %}
+
+
+    </div>
     {% endfor %}
-
-    <hr>
 </div>
-{% endfor %}
-
 
 <script>
 
@@ -201,9 +229,82 @@ dateButtons.forEach(button => {
 });
 
 applyFilters();
+document.querySelectorAll(".expand-btn")
+.forEach(button => {
+
+    button.addEventListener("click", () => {
+
+        const details =
+            button.previousElementSibling;
+
+        details.classList.toggle("collapsed");
+
+        button.textContent =
+            details.classList.contains("collapsed")
+            ? "(Mai mult)"
+            : "(Mai puțin)";
+    });
+});
+
 </script>
 
 <style>
+@font-face {
+font-family: "Alverata";
+src: url("/static/fonts/Alverata-Regular.woff2") format("woff2");
+font-weight: 400;
+font-style: normal;
+}
+
+@font-face {
+    font-family: "Alverata";
+    src: url("/static/fonts/Alverata-Bold.woff2") format("woff2");
+    font-weight: 700;
+    font-style: normal;
+}
+.event-content-row {
+    display: flex;
+    gap: 1.5rem;
+
+    align-items: flex-start;
+
+    margin-top: 1rem;
+}
+
+/* IMAGE COLUMN */
+.event-image img {
+    width: 12rem;
+    height: auto;
+
+    display: block;
+}
+
+/* TEXT COLUMN */
+.event-info {
+    flex: 1;
+}
+
+/* META */
+.event-meta {
+    margin-top: 0;
+    margin-bottom: 1rem;
+
+    font-weight: 500;
+}
+
+/* MOBILE */
+@media (max-width: 700px) {
+
+    .event-content-row {
+        flex-direction: column;
+    }
+
+    .event-image img {
+        width: 100%;
+        max-width: 18rem;
+    }
+}
+
 .site-header {
     position: sticky;
     top: 0;
@@ -220,6 +321,7 @@ applyFilters();
     gap: 0.75rem;
     flex-wrap: wrap;
     margin-bottom: 1rem;
+    justify-content: center;
 }
 
 .filter-btn,
@@ -277,15 +379,67 @@ applyFilters();
 }*/
 
 
+.page-content {
+    max-width: 760px;
+    margin: 0 auto;
+
+    padding-left: 1.5rem;
+    padding-right: 1.5rem;
+
+    padding-top: 2rem;
+    padding-bottom: 4rem;
+}
+
+.date-heading {
+    margin-top: 3rem;
+    margin-bottom: 2rem;
+
+    padding-bottom: 0.75rem;
+
+    border-bottom: 1px solid #e6e6e6;
+
+    font-size: 1.4rem;
+    font-weight: 700;
+
+    letter-spacing: 0.03em;
+
+    color: #111;
+}
+
+/* EVENT SPACING */
+.event-card {
+    margin-bottom: 2rem;
+}
+
+/* EVENT DIVIDER */
+.event-card hr {
+    border: none;
+    border-top: 1px solid #efefef;
+
+    margin-top: 2rem;
+}
+
+/* TITLE LINKS */
+.event-card h3 a {
+    color: black;
+    text-decoration: none;
+    transition: color 0.2s ease;
+    font-size: 1.3rem;
+}
+
+.event-card h3 a:hover {
+    color: #e00000;
+}
+
 h1, h2, h3 {
     font-weight: 600;
 }
 
 body {
     margin: 0;
-    font-family: "Alverata", GARAMOND, serif;
+    font-family: "Alverata", Garamond, serif;
     background: white;
-    padding-left:2rem;
+    /* padding-left:2rem; */
 }
 
 /* LOGO AREA */
@@ -322,6 +476,46 @@ a:visited {
 a:hover {
   color: red;
 }
+
+
+.event-details {
+    white-space: pre-line;
+    line-height: 1.5;
+    overflow: hidden;
+    transition: max-height 0.3s ease;
+}
+
+.event-details.collapsed {
+    display: -webkit-box;
+    -webkit-line-clamp: 5;
+    -webkit-box-orient: vertical;
+    line-clamp: 5;                /* Standard property */
+    overflow: hidden;
+}
+
+.expand-btn {
+    background: none;
+    border: none;
+    padding: 0;
+    margin-top: 0.5rem;
+
+    cursor: pointer;
+    appearance: none;
+    -webkit-appearance: none;
+    font-family: "Alverata";
+    font-size: 0.85rem;
+    font-weight: 700;
+
+    color: black;
+}
+
+.expand-btn:hover {
+    color: #e00000;
+}
+
+</style>
+
+</style>
 </style>
 
 </body>

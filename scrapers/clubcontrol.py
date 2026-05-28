@@ -100,6 +100,12 @@ def scrape():
             link = a.get("href") if (a := event.find("a")) else None
             link = urljoin(base_url, link)
 
+            #Enter link to extract event details
+            event_details_response = requests.get(link, headers=headers)
+            event_details_soup = BeautifulSoup(event_details_response.text, "html.parser")
+            meta_tag = event_details_soup.select_one('meta[property="og:description"]')
+            details = meta_tag.get("content") if meta_tag else ""
+
             img= event.find("div", class_="img")
             img_tag = img.find("img") if img else None
             image_url= img_tag.get("src") if img_tag else None
@@ -132,7 +138,6 @@ def scrape():
             #DB PUSH
 
             VENUE= "Club Control"
-            details=""  # no details page or description available
 
             from db_utils import save_event
             status = save_event(title, date_obj, VENUE, link, details, image_url, event_type="Concert")
