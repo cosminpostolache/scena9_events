@@ -3,14 +3,16 @@ from scrapers import metropolis
 from scrapers import ateneu
 from scrapers import salaradio
 from scrapers import expirat
+from scrapers import MNAC
 from models import db 
 
 SCRAPERS = [
-    clubcontrol.scrape,
-    metropolis.scrape,
+    #clubcontrol.scrape,
+    #metropolis.scrape,
     #ateneu.scrape,
     #salaradio.scrape
     #expirat.scrape
+    MNAC.scrape
 ]
 
 def get_events():

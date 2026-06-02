@@ -31,12 +31,15 @@
         Teatru
     </button>
 
-   <!-- <button
-        class="filter-btn disabled"
-        disabled
+     <button
+        id="exhibition-btn"
+        class="filter-btn"
+        data-category="Expoziție"
     >
-        Altele
-    </button> -->
+        Expoziție
+    </button>
+
+
 
 </div>
 <div class="page-content">
@@ -229,6 +232,7 @@ dateButtons.forEach(button => {
 });
 
 applyFilters();
+
 document.querySelectorAll(".expand-btn")
 .forEach(button => {
 
